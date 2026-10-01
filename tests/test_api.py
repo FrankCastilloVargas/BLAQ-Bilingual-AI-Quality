@@ -12,7 +12,7 @@ def test_health():
     assert response.json()["status"] == "ok"
 
 
-def test_create_and_read_audit(tmp_path, monkeypatch):
+def test_create_list_and_read_audit(tmp_path, monkeypatch):
     monkeypatch.setattr(storage, "DATA_DIR", tmp_path / "audits")
     payload = {
         "client": "Demo Client",
@@ -24,6 +24,16 @@ def test_create_and_read_audit(tmp_path, monkeypatch):
     assert created.status_code == 201
     audit_id = created.json()["id"]
 
+    listed = client.get("/audits")
+    assert listed.status_code == 200
+    assert len(listed.json()) == 1
+
     fetched = client.get(f"/audits/{audit_id}")
     assert fetched.status_code == 200
     assert fetched.json()["client"] == "Demo Client"
+
+
+def test_missing_audit_returns_404(tmp_path, monkeypatch):
+    monkeypatch.setattr(storage, "DATA_DIR", tmp_path / "audits")
+    response = client.get("/audits/00000000-0000-0000-0000-000000000000")
+    assert response.status_code == 404
