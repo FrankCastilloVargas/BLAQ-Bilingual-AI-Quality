@@ -119,3 +119,15 @@ def test_html_report_endpoint_returns_printable_document(tmp_path, monkeypatch):
     assert response.headers["content-type"].startswith("text/html")
     assert "BLAQ-25 Bilingual AI Quality Audit" in response.text
     assert "PROVISIONAL" in response.text
+
+
+def test_pdf_report_endpoint_returns_downloadable_pdf(tmp_path, monkeypatch):
+    monkeypatch.setattr(storage, "DATA_DIR", tmp_path / "audits")
+    audit_id = client.post("/audits", json={
+        "client": "Demo", "product_name": "Bot", "reviewer": "Reviewer", "tests": []
+    }).json()["id"]
+    response = client.get(f"/audits/{audit_id}/report.pdf")
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("application/pdf")
+    assert "attachment;" in response.headers["content-disposition"]
+    assert response.content.startswith(b"%PDF-")
