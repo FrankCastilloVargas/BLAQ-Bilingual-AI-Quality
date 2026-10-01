@@ -131,3 +131,20 @@ def test_pdf_report_endpoint_returns_downloadable_pdf(tmp_path, monkeypatch):
     assert response.headers["content-type"].startswith("application/pdf")
     assert "attachment;" in response.headers["content-disposition"]
     assert response.content.startswith(b"%PDF-")
+
+
+def test_create_blaq25_audit_from_official_catalog(tmp_path, monkeypatch):
+    monkeypatch.setattr(storage, "DATA_DIR", tmp_path / "audits")
+    response = client.post("/audits/blaq25", json={
+        "client": "ACME", "product_name": "Support Bot", "model_version": "v2", "reviewer": "Reviewer"
+    })
+    assert response.status_code == 201
+    body = response.json()
+    assert len(body["tests"]) == 25
+    assert body["tests"][0]["test_id"] == "A01"
+    assert body["tests"][-1]["test_id"] == "E05"
+    assert all(item["actual_response"] is None for item in body["tests"])
+    assert all(item["evaluation"] is None for item in body["tests"])
+    persisted = client.get(f'/audits/{body["id"]}')
+    assert persisted.status_code == 200
+    assert len(persisted.json()["tests"]) == 25
