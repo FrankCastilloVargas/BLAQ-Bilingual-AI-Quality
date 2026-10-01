@@ -52,3 +52,19 @@ Early MVP / validation stage. The scoring framework is an operational QA rubric 
 ## License
 
 All rights reserved unless a license is added later.
+
+
+## Sprint 2 — Audit flow
+
+The MVP now includes:
+
+- 25 concrete bilingual EN/es-MX QA scenarios in `data/blaq25.json`
+- JSON persistence for audit records under `data/audits/`
+- `POST /audits` to create and persist an audit
+- `GET /audits` and `GET /audits/{audit_id}` to retrieve audits
+- `POST /evaluations/score` for a single response score
+- `POST /evaluations/audit-summary` for an aggregate BLAQ result
+- Aggregate scoring based only on human-approved evaluations
+- Explicit HIGH/CRITICAL finding visibility independent of the numeric score
+
+The included scenarios describe a fictional customer-service environment. They are templates and must be customized against a real client's documented policies before a paid audit.
