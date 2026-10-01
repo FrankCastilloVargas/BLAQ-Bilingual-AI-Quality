@@ -13,7 +13,7 @@ from app.services.review import TestNotFoundError, approve_test
 from app.services.catalog import CatalogValidationError, create_audit_from_catalog
 from app.services.reporting import build_audit_report
 from app.services.responses import set_test_response
-from app.services.evaluator import RuleBasedEvaluator
+from app.services.evaluator_factory import build_evaluator
 from app.services.stored_evaluation import propose_stored_test, MissingTestResponseError, ApprovedTestError
 from app.services.html_report import render_audit_report_html
 from app.services.pdf_report import render_audit_report_pdf
@@ -64,7 +64,7 @@ def update_test_response(audit_id: UUID, test_id: str, request: TestResponseUpda
 def propose_test_evaluation(audit_id: UUID, test_id: str) -> EvaluationProposal:
     try:
         audit = get_audit(audit_id)
-        proposal = propose_stored_test(audit, test_id, RuleBasedEvaluator())
+        proposal = propose_stored_test(audit, test_id, build_evaluator())
         save_audit(audit)
         return proposal
     except AuditNotFoundError as exc:
