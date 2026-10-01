@@ -1,12 +1,14 @@
 from uuid import UUID
 
 from fastapi import APIRouter, HTTPException, status
+from fastapi.responses import HTMLResponse
 
 from app.models.audit import Audit
 from app.models.review import HumanReview
 from app.models.report import AuditReport
 from app.services.review import TestNotFoundError, approve_test
 from app.services.reporting import build_audit_report
+from app.services.html_report import render_audit_report_html
 from app.services.storage import AuditNotFoundError, get_audit, list_audits, save_audit
 
 router = APIRouter()
@@ -46,5 +48,14 @@ def review_test(audit_id: UUID, test_id: str, review: HumanReview) -> Audit:
 def read_audit_report(audit_id: UUID) -> AuditReport:
     try:
         return build_audit_report(get_audit(audit_id))
+    except AuditNotFoundError as exc:
+        raise HTTPException(status_code=404, detail="Audit not found") from exc
+
+
+@router.get("/{audit_id}/report.html", response_class=HTMLResponse)
+def read_audit_report_html(audit_id: UUID) -> HTMLResponse:
+    try:
+        report = build_audit_report(get_audit(audit_id))
+        return HTMLResponse(content=render_audit_report_html(report))
     except AuditNotFoundError as exc:
         raise HTTPException(status_code=404, detail="Audit not found") from exc
