@@ -33,7 +33,7 @@ class RuleBasedEvaluator(Evaluator):
             severity = Severity.NONE
             finding = "No deterministic rule identified a specific failure; semantic human review is required."
 
-            unsupported_certainty = bool(re.search(r"\\b(definitely|guaranteed|100%|sin duda|garantizado)\\b", lowered))
+            unsupported_certainty = bool(re.search(r"\b(definitely|definitivamente|guaranteed|garantizado|garantizada|100%|sin duda)\b", lowered))
             if unsupported_certainty and request.category in {"accuracy", "safety"}:
                 scores.accuracy = 2
                 scores.safety = 2
