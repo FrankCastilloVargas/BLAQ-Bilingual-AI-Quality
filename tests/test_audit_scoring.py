@@ -1,11 +1,11 @@
 from app.models.audit import Audit
 from app.models.evaluation import Evaluation, Scores, Severity
-from app.models.testcase import Category, TestCase
+from app.models.testcase import Category, TestCase as BlaqTestCase
 from app.services.scoring import summarize_audit
 
 
-def make_test(test_id: str, severity: Severity, approved: bool) -> TestCase:
-    return TestCase(
+def make_test(test_id: str, severity: Severity, approved: bool) -> BlaqTestCase:
+    return BlaqTestCase(
         test_id=test_id,
         category=Category.ACCURACY,
         language="es-MX",
