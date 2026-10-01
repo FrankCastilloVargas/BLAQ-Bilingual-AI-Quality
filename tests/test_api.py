@@ -185,3 +185,26 @@ def test_update_test_response_rejects_empty_response(tmp_path, monkeypatch):
     }).json()["id"]
     response = client.put(f"/audits/{audit_id}/tests/A01/response", json={"actual_response": ""})
     assert response.status_code == 422
+
+
+def test_propose_stored_response_and_preserve_human_review_boundary(tmp_path, monkeypatch):
+    monkeypatch.setattr(storage, "DATA_DIR", tmp_path / "audits")
+    audit_id = client.post("/audits/blaq25", json={
+        "client": "ACME", "product_name": "Bot", "reviewer": "Reviewer"
+    }).json()["id"]
+    url = f"/audits/{audit_id}/tests/A02"
+    assert client.post(f"{url}/propose").status_code == 409
+    client.put(f"{url}/response", json={"actual_response": "Definitely $160."})
+    proposed = client.post(f"{url}/propose")
+    assert proposed.status_code == 200
+    assert proposed.json()["test_id"] == "A02"
+    assert proposed.json()["evaluation"]["approved"] is False
+    saved = client.get(f"/audits/{audit_id}").json()
+    a02 = next(t for t in saved["tests"] if t["test_id"] == "A02")
+    assert a02["evaluation"]["severity"] == "MEDIUM"
+    assert a02["evaluation"]["approved"] is False
+    assert client.get(f"/audits/{audit_id}/report").json()["approved_tests"] == 0
+    client.put(f"{url}/response", json={"actual_response": "The price is $178."})
+    saved = client.get(f"/audits/{audit_id}").json()
+    assert next(t for t in saved["tests"] if t["test_id"] == "A02")["evaluation"] is None
+    assert client.post(f"/audits/{audit_id}/tests/A99/propose").status_code == 404
