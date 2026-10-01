@@ -148,3 +148,40 @@ def test_create_blaq25_audit_from_official_catalog(tmp_path, monkeypatch):
     persisted = client.get(f'/audits/{body["id"]}')
     assert persisted.status_code == 200
     assert len(persisted.json()["tests"]) == 25
+
+
+def test_update_test_response_persists_without_approving(tmp_path, monkeypatch):
+    monkeypatch.setattr(storage, "DATA_DIR", tmp_path / "audits")
+    audit = client.post("/audits/blaq25", json={
+        "client": "ACME", "product_name": "Bot", "reviewer": "Reviewer"
+    }).json()
+    audit_id = audit["id"]
+    response = client.put(f"/audits/{audit_id}/tests/A02/response", json={
+        "actual_response": "Dos servicios cuestan $160 por descuento."
+    })
+    assert response.status_code == 200
+    test = next(item for item in response.json()["tests"] if item["test_id"] == "A02")
+    assert test["actual_response"] == "Dos servicios cuestan $160 por descuento."
+    assert test["evaluation"] is None
+    persisted = client.get(f"/audits/{audit_id}").json()
+    saved = next(item for item in persisted["tests"] if item["test_id"] == "A02")
+    assert saved["actual_response"] == test["actual_response"]
+
+
+def test_update_test_response_rejects_unknown_test(tmp_path, monkeypatch):
+    monkeypatch.setattr(storage, "DATA_DIR", tmp_path / "audits")
+    audit_id = client.post("/audits/blaq25", json={
+        "client": "ACME", "product_name": "Bot", "reviewer": "Reviewer"
+    }).json()["id"]
+    response = client.put(f"/audits/{audit_id}/tests/A99/response", json={"actual_response": "x"})
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Test not found"
+
+
+def test_update_test_response_rejects_empty_response(tmp_path, monkeypatch):
+    monkeypatch.setattr(storage, "DATA_DIR", tmp_path / "audits")
+    audit_id = client.post("/audits/blaq25", json={
+        "client": "ACME", "product_name": "Bot", "reviewer": "Reviewer"
+    }).json()["id"]
+    response = client.put(f"/audits/{audit_id}/tests/A01/response", json={"actual_response": ""})
+    assert response.status_code == 422
