@@ -5,6 +5,7 @@ from fastapi.responses import HTMLResponse, Response
 
 from app.models.audit import Audit
 from app.models.audit_create import AuditCreateFromCatalog
+from app.models.evaluator import EvaluationProposal
 from app.models.review import HumanReview
 from app.models.report import AuditReport
 from app.models.test_response import TestResponseUpdate
@@ -12,6 +13,8 @@ from app.services.review import TestNotFoundError, approve_test
 from app.services.catalog import CatalogValidationError, create_audit_from_catalog
 from app.services.reporting import build_audit_report
 from app.services.responses import set_test_response
+from app.services.evaluator import RuleBasedEvaluator
+from app.services.stored_evaluation import propose_stored_test, MissingTestResponseError, ApprovedTestError
 from app.services.html_report import render_audit_report_html
 from app.services.pdf_report import render_audit_report_pdf
 from app.services.storage import AuditNotFoundError, get_audit, list_audits, save_audit
@@ -55,6 +58,21 @@ def update_test_response(audit_id: UUID, test_id: str, request: TestResponseUpda
         raise HTTPException(status_code=404, detail="Audit not found") from exc
     except TestNotFoundError as exc:
         raise HTTPException(status_code=404, detail="Test not found") from exc
+
+
+@router.post("/{audit_id}/tests/{test_id}/propose", response_model=EvaluationProposal)
+def propose_test_evaluation(audit_id: UUID, test_id: str) -> EvaluationProposal:
+    try:
+        audit = get_audit(audit_id)
+        proposal = propose_stored_test(audit, test_id, RuleBasedEvaluator())
+        save_audit(audit)
+        return proposal
+    except AuditNotFoundError as exc:
+        raise HTTPException(status_code=404, detail="Audit not found") from exc
+    except TestNotFoundError as exc:
+        raise HTTPException(status_code=404, detail="Test not found") from exc
+    except (MissingTestResponseError, ApprovedTestError) as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
 
 
 @router.put("/{audit_id}/tests/{test_id}/review", response_model=Audit)
