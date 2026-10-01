@@ -21,5 +21,7 @@ jobs:
           cache: pip
       - name: Install dependencies
         run: python -m pip install --upgrade pip && pip install -r requirements.txt
+      - name: Build validation gold set
+        run: python scripts/build_gold_set.py
       - name: Run tests
         run: pytest -q
