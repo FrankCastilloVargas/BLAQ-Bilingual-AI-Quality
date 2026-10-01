@@ -1,7 +1,7 @@
 from uuid import UUID
 
 from fastapi import APIRouter, HTTPException, status
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, Response
 
 from app.models.audit import Audit
 from app.models.review import HumanReview
@@ -9,6 +9,7 @@ from app.models.report import AuditReport
 from app.services.review import TestNotFoundError, approve_test
 from app.services.reporting import build_audit_report
 from app.services.html_report import render_audit_report_html
+from app.services.pdf_report import render_audit_report_pdf
 from app.services.storage import AuditNotFoundError, get_audit, list_audits, save_audit
 
 router = APIRouter()
@@ -57,5 +58,18 @@ def read_audit_report_html(audit_id: UUID) -> HTMLResponse:
     try:
         report = build_audit_report(get_audit(audit_id))
         return HTMLResponse(content=render_audit_report_html(report))
+    except AuditNotFoundError as exc:
+        raise HTTPException(status_code=404, detail="Audit not found") from exc
+
+
+@router.get("/{audit_id}/report.pdf")
+def read_audit_report_pdf(audit_id: UUID) -> Response:
+    try:
+        report = build_audit_report(get_audit(audit_id))
+        pdf = render_audit_report_pdf(report)
+        filename = f"blaq25-{audit_id}.pdf"
+        return Response(content=pdf, media_type="application/pdf", headers={
+            "Content-Disposition": f'attachment; filename="{filename}"'
+        })
     except AuditNotFoundError as exc:
         raise HTTPException(status_code=404, detail="Audit not found") from exc
