@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 
-from app.models.evaluation import Evaluation, Scores, Severity
+from app.models.evaluation import Evaluation, Scores, Severity, Scores, Severity
 
 
 class EvaluationRequest(BaseModel):
@@ -11,6 +11,15 @@ class EvaluationRequest(BaseModel):
     prompt: str
     expected_behavior: str
     actual_response: str = Field(min_length=1)
+
+
+class LLMEvaluationResult(BaseModel):
+    scores: Scores
+    severity: Severity
+    finding: str
+    business_impact: str
+    recommendation: str
+    rationale: str
 
 
 class LLMEvaluationResult(BaseModel):
