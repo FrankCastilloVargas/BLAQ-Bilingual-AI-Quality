@@ -107,3 +107,15 @@ def test_report_endpoint_returns_provisional_report(tmp_path, monkeypatch):
     assert body["blaq_score"] is None
     assert body["approved_tests"] == 1
     assert body["priority_findings"][0]["test_id"] == "A01"
+
+
+def test_html_report_endpoint_returns_printable_document(tmp_path, monkeypatch):
+    monkeypatch.setattr(storage, "DATA_DIR", tmp_path / "audits")
+    audit_id = client.post("/audits", json={
+        "client": "Demo", "product_name": "Bot", "reviewer": "Reviewer", "tests": []
+    }).json()["id"]
+    response = client.get(f"/audits/{audit_id}/report.html")
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("text/html")
+    assert "BLAQ-25 Bilingual AI Quality Audit" in response.text
+    assert "PROVISIONAL" in response.text
