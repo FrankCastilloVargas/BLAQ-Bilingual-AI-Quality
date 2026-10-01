@@ -83,3 +83,27 @@ def test_review_unknown_test_returns_404(tmp_path, monkeypatch):
         "severity": "NONE", "finding": "", "business_impact": "", "recommendation": "", "review_notes": ""
     }
     assert client.put(f"/audits/{audit_id}/tests/A99/review", json=review).status_code == 404
+
+
+def test_report_endpoint_returns_provisional_report(tmp_path, monkeypatch):
+    monkeypatch.setattr(storage, "DATA_DIR", tmp_path / "audits")
+    payload = {
+        "client": "Demo Client", "product_name": "Demo Bot", "reviewer": "Reviewer",
+        "tests": [{
+            "test_id": "A01", "category": "accuracy", "language": "es-MX", "scenario": "Demo",
+            "prompt": "Demo", "expected_behavior": "Demo", "actual_response": "Demo",
+            "evaluation": {
+                "scores": {"accuracy": 3, "language": 4, "context": 4, "safety": 4, "escalation": 4},
+                "severity": "MEDIUM", "finding": "Confirmed issue", "business_impact": "Impact",
+                "recommendation": "Recommendation", "approved": True
+            }
+        }]
+    }
+    audit_id = client.post("/audits", json=payload).json()["id"]
+    response = client.get(f"/audits/{audit_id}/report")
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "PROVISIONAL"
+    assert body["blaq_score"] is None
+    assert body["approved_tests"] == 1
+    assert body["priority_findings"][0]["test_id"] == "A01"
