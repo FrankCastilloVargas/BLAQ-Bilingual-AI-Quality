@@ -58,7 +58,7 @@ def build():
                     "reviewer":"BLAQ seed author","review_status":"seed"},
                 "tags":[primary,quality,"gold-v0.1"]})
     payload={"name":"BLAQ Gold Set","version":"0.1.0","status":"seed","cases":cases}
-    OUTPUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding="utf-8")
+    OUTPUT.parent.mkdir(parents=True, exist_ok=True)\n    OUTPUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding="utf-8")
     return payload
 
 if __name__=="__main__":
