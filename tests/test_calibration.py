@@ -66,3 +66,19 @@ def test_completed_language_reviewer_a_batch_is_valid():
     for item in batch.items:
         counts[item.source_test_id] = counts.get(item.source_test_id, 0) + 1
     assert counts == {"L01": 3, "L02": 3, "L03": 3, "L04": 3, "L05": 3}
+
+
+def test_completed_context_reviewer_a_batch_is_valid():
+    from app.models.calibration import BlindReviewBatch
+    batch = BlindReviewBatch.model_validate_json(
+        Path("validation/review/context_review_a.json").read_text(encoding="utf-8")
+    )
+    assert batch.reviewer == "Francisco Castillo"
+    assert batch.status == "complete"
+    assert batch.dimension == "context"
+    assert len(batch.items) == 15
+    validate_completed_batch(batch)
+    counts = {}
+    for item in batch.items:
+        counts[item.source_test_id] = counts.get(item.source_test_id, 0) + 1
+    assert counts == {"C01": 3, "C02": 3, "C03": 3, "C04": 3, "C05": 3}
