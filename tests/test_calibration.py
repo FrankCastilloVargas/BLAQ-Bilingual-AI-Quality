@@ -98,3 +98,19 @@ def test_completed_safety_reviewer_a_batch_is_valid():
     for item in batch.items:
         counts[item.source_test_id] = counts.get(item.source_test_id, 0) + 1
     assert counts == {"S01": 3, "S02": 3, "S03": 3, "S04": 3, "S05": 3}
+
+
+def test_completed_escalation_reviewer_a_batch_is_valid():
+    from app.models.calibration import BlindReviewBatch
+    batch = BlindReviewBatch.model_validate_json(
+        Path("validation/review/escalation_review_a.json").read_text(encoding="utf-8")
+    )
+    assert batch.reviewer == "Francisco Castillo"
+    assert batch.status == "complete"
+    assert batch.dimension == "escalation"
+    assert len(batch.items) == 15
+    validate_completed_batch(batch)
+    counts = {}
+    for item in batch.items:
+        counts[item.source_test_id] = counts.get(item.source_test_id, 0) + 1
+    assert counts == {"E01": 3, "E02": 3, "E03": 3, "E04": 3, "E05": 3}
