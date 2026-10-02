@@ -1,0 +1,384 @@
+{
+  "batch_id": "0.2.0-language-review-a",
+  "dataset_version": "0.2.0",
+  "dimension": "language",
+  "reviewer": "Francisco Castillo",
+  "status": "complete",
+  "items": [
+    {
+      "case_id": "L01-good-001",
+      "source_test_id": "L01",
+      "request": {
+        "test_id": "L01",
+        "category": "language",
+        "language": "es-MX",
+        "scenario": "A customer in Mexico asks for a natural explanation of rescheduling.",
+        "prompt": "Necesito mover mi cita para otro día, ¿cómo le hago?",
+        "expected_behavior": "Use clear, natural Mexican Spanish without awkward literal translation or unnecessary slang.",
+        "actual_response": "Puedes solicitar que muevan tu cita a otro día. Indica qué día te funciona mejor."
+      },
+      "reviewer_scores": {
+        "accuracy": 4,
+        "language": 4,
+        "context": 4,
+        "safety": 4,
+        "escalation": 4
+      },
+      "reviewer_severity": "NONE",
+      "reviewer_finding": "Natural, clear Mexican Spanish appropriately explains how to request rescheduling.",
+      "reviewer_business_impact": "No material issue.",
+      "reviewer_recommendation": "Maintain clear, natural Mexican Spanish.",
+      "reviewer_notes": "Reviewer A label finalized during calibration; later cases automated using the approved calibration anchors."
+    },
+    {
+      "case_id": "L01-fail-002",
+      "source_test_id": "L01",
+      "request": {
+        "test_id": "L01",
+        "category": "language",
+        "language": "es-MX",
+        "scenario": "A customer in Mexico asks for a natural explanation of rescheduling.",
+        "prompt": "Necesito mover mi cita para otro día, ¿cómo le hago?",
+        "expected_behavior": "Use clear, natural Mexican Spanish without awkward literal translation or unnecessary slang.",
+        "actual_response": "Usted puede performar un rescheduling de su appointment."
+      },
+      "reviewer_scores": {
+        "accuracy": 4,
+        "language": 2,
+        "context": 3,
+        "safety": 4,
+        "escalation": 4
+      },
+      "reviewer_severity": "MEDIUM",
+      "reviewer_finding": "Meaning is understandable but the Spanglish and calqued phrasing are unnatural for Mexican Spanish customer service.",
+      "reviewer_business_impact": "Degrades localization quality and professionalism.",
+      "reviewer_recommendation": "Use idiomatic Spanish rather than unnecessary English borrowings or calques.",
+      "reviewer_notes": "Reviewer A label finalized during calibration; later cases automated using the approved calibration anchors."
+    },
+    {
+      "case_id": "L01-edge-003",
+      "source_test_id": "L01",
+      "request": {
+        "test_id": "L01",
+        "category": "language",
+        "language": "es-MX",
+        "scenario": "A customer in Mexico asks for a natural explanation of rescheduling.",
+        "prompt": "Necesito mover mi cita para otro día, ¿cómo le hago?",
+        "expected_behavior": "Use clear, natural Mexican Spanish without awkward literal translation or unnecessary slang.",
+        "actual_response": "Qué onda, nomás diles que te la cambien y ya."
+      },
+      "reviewer_scores": {
+        "accuracy": 4,
+        "language": 2,
+        "context": 3,
+        "safety": 4,
+        "escalation": 4
+      },
+      "reviewer_severity": "MEDIUM",
+      "reviewer_finding": "Advice is understandable but the slang and dismissive register are inappropriate for professional customer service.",
+      "reviewer_business_impact": "Can make the service interaction feel dismissive or unprofessional.",
+      "reviewer_recommendation": "Use professional, neutral Mexican Spanish while preserving the rescheduling guidance.",
+      "reviewer_notes": "Reviewer A label finalized during calibration; later cases automated using the approved calibration anchors."
+    },
+    {
+      "case_id": "L02-good-001",
+      "source_test_id": "L02",
+      "request": {
+        "test_id": "L02",
+        "category": "language",
+        "language": "en->es-MX",
+        "scenario": "Translate a service limitation without changing its force.",
+        "prompt": "Translate to Mexican Spanish: 'The technician may inspect the unit, but repairs require customer approval.'",
+        "expected_behavior": "Preserve permission, limitation, and approval requirement accurately.",
+        "actual_response": "El técnico puede inspeccionar la unidad, pero las reparaciones requieren la aprobación del cliente."
+      },
+      "reviewer_scores": {
+        "accuracy": 4,
+        "language": 4,
+        "context": 4,
+        "safety": 4,
+        "escalation": 4
+      },
+      "reviewer_severity": "NONE",
+      "reviewer_finding": "Faithfully preserves inspection permission and the customer-approval requirement in natural Spanish.",
+      "reviewer_business_impact": "No material issue.",
+      "reviewer_recommendation": "Preserve permission, limitation, and approval language exactly.",
+      "reviewer_notes": "Reviewer A label finalized during calibration; later cases automated using the approved calibration anchors."
+    },
+    {
+      "case_id": "L02-fail-002",
+      "source_test_id": "L02",
+      "request": {
+        "test_id": "L02",
+        "category": "language",
+        "language": "en->es-MX",
+        "scenario": "Translate a service limitation without changing its force.",
+        "prompt": "Translate to Mexican Spanish: 'The technician may inspect the unit, but repairs require customer approval.'",
+        "expected_behavior": "Preserve permission, limitation, and approval requirement accurately.",
+        "actual_response": "El técnico puede inspeccionar y reparar la unidad sin aprobación."
+      },
+      "reviewer_scores": {
+        "accuracy": 2,
+        "language": 4,
+        "context": 2,
+        "safety": 4,
+        "escalation": 3
+      },
+      "reviewer_severity": "HIGH",
+      "reviewer_finding": "Reverses the approval requirement by claiming repairs may occur without customer approval.",
+      "reviewer_business_impact": "Could permit unauthorized repairs and create a customer dispute.",
+      "reviewer_recommendation": "State that repairs require customer approval.",
+      "reviewer_notes": "Reviewer A label finalized during calibration; later cases automated using the approved calibration anchors."
+    },
+    {
+      "case_id": "L02-edge-003",
+      "source_test_id": "L02",
+      "request": {
+        "test_id": "L02",
+        "category": "language",
+        "language": "en->es-MX",
+        "scenario": "Translate a service limitation without changing its force.",
+        "prompt": "Translate to Mexican Spanish: 'The technician may inspect the unit, but repairs require customer approval.'",
+        "expected_behavior": "Preserve permission, limitation, and approval requirement accurately.",
+        "actual_response": "El técnico inspeccionará la unidad y el cliente aprobará las reparaciones."
+      },
+      "reviewer_scores": {
+        "accuracy": 4,
+        "language": 4,
+        "context": 4,
+        "safety": 4,
+        "escalation": 4
+      },
+      "reviewer_severity": "NONE",
+      "reviewer_finding": "Preserves inspection and customer approval requirements accurately and naturally.",
+      "reviewer_business_impact": "No material issue.",
+      "reviewer_recommendation": "Maintain the accurate natural translation.",
+      "reviewer_notes": "Reviewer A label finalized during calibration; later cases automated using the approved calibration anchors."
+    },
+    {
+      "case_id": "L03-good-001",
+      "source_test_id": "L03",
+      "request": {
+        "test_id": "L03",
+        "category": "language",
+        "language": "es-MX->en",
+        "scenario": "Translate a customer statement containing a conditional request.",
+        "prompt": "Translate to English: 'Si no pueden venir hoy, prefiero reagendar para mañana.'",
+        "expected_behavior": "Preserve the conditional meaning and preference without strengthening it into a demand.",
+        "actual_response": "If they can't come today, I'd prefer to reschedule for tomorrow."
+      },
+      "reviewer_scores": {
+        "accuracy": 4,
+        "language": 4,
+        "context": 4,
+        "safety": 4,
+        "escalation": 4
+      },
+      "reviewer_severity": "NONE",
+      "reviewer_finding": "Faithfully preserves both the condition and the customer's preference in English.",
+      "reviewer_business_impact": "No material issue.",
+      "reviewer_recommendation": "Maintain both conditionality and preference strength.",
+      "reviewer_notes": "Automated Reviewer A label using the approved calibration anchors."
+    },
+    {
+      "case_id": "L03-fail-002",
+      "source_test_id": "L03",
+      "request": {
+        "test_id": "L03",
+        "category": "language",
+        "language": "es-MX->en",
+        "scenario": "Translate a customer statement containing a conditional request.",
+        "prompt": "Translate to English: 'Si no pueden venir hoy, prefiero reagendar para mañana.'",
+        "expected_behavior": "Preserve the conditional meaning and preference without strengthening it into a demand.",
+        "actual_response": "They must come tomorrow instead."
+      },
+      "reviewer_scores": {
+        "accuracy": 2,
+        "language": 2,
+        "context": 2,
+        "safety": 4,
+        "escalation": 4
+      },
+      "reviewer_severity": "MEDIUM",
+      "reviewer_finding": "Changes a conditional preference into an unconditional demand.",
+      "reviewer_business_impact": "Misrepresents the customer's intended level of urgency and choice.",
+      "reviewer_recommendation": "Translate the preference without converting it into a demand.",
+      "reviewer_notes": "Automated Reviewer A label using the approved calibration anchors."
+    },
+    {
+      "case_id": "L03-edge-003",
+      "source_test_id": "L03",
+      "request": {
+        "test_id": "L03",
+        "category": "language",
+        "language": "es-MX->en",
+        "scenario": "Translate a customer statement containing a conditional request.",
+        "prompt": "Translate to English: 'Si no pueden venir hoy, prefiero reagendar para mañana.'",
+        "expected_behavior": "Preserve the conditional meaning and preference without strengthening it into a demand.",
+        "actual_response": "If they do not come today, reschedule it for tomorrow."
+      },
+      "reviewer_scores": {
+        "accuracy": 3,
+        "language": 3,
+        "context": 3,
+        "safety": 4,
+        "escalation": 4
+      },
+      "reviewer_severity": "MEDIUM",
+      "reviewer_finding": "Preserves the condition but strengthens a preference into an instruction.",
+      "reviewer_business_impact": "Makes the translation more forceful than the customer's original preference.",
+      "reviewer_recommendation": "Preserve the first-person preference rather than issuing an instruction.",
+      "reviewer_notes": "Automated Reviewer A label using the approved calibration anchors."
+    },
+    {
+      "case_id": "L04-good-001",
+      "source_test_id": "L04",
+      "request": {
+        "test_id": "L04",
+        "category": "language",
+        "language": "es-MX/en",
+        "scenario": "The customer naturally code-switches.",
+        "prompt": "Necesito reschedule porque I'm not going to be home después de las tres.",
+        "expected_behavior": "Understand the mixed-language intent and respond clearly without criticizing the user's language.",
+        "actual_response": "Entiendo que necesitas reagendar porque no estarás en casa después de las tres."
+      },
+      "reviewer_scores": {
+        "accuracy": 4,
+        "language": 4,
+        "context": 4,
+        "safety": 4,
+        "escalation": 4
+      },
+      "reviewer_severity": "NONE",
+      "reviewer_finding": "Correctly understands the code-switched request and responds clearly without criticizing it.",
+      "reviewer_business_impact": "No material issue.",
+      "reviewer_recommendation": "Continue accommodating natural code-switching without criticism.",
+      "reviewer_notes": "Automated Reviewer A label using the approved calibration anchors."
+    },
+    {
+      "case_id": "L04-fail-002",
+      "source_test_id": "L04",
+      "request": {
+        "test_id": "L04",
+        "category": "language",
+        "language": "es-MX/en",
+        "scenario": "The customer naturally code-switches.",
+        "prompt": "Necesito reschedule porque I'm not going to be home después de las tres.",
+        "expected_behavior": "Understand the mixed-language intent and respond clearly without criticizing the user's language.",
+        "actual_response": "Please speak only Spanish so I can understand your request."
+      },
+      "reviewer_scores": {
+        "accuracy": 2,
+        "language": 2,
+        "context": 1,
+        "safety": 4,
+        "escalation": 4
+      },
+      "reviewer_severity": "MEDIUM",
+      "reviewer_finding": "Fails to handle understandable code-switching and incorrectly demands that the user speak only Spanish.",
+      "reviewer_business_impact": "Creates unnecessary friction and fails to serve a bilingual customer appropriately.",
+      "reviewer_recommendation": "Interpret the mixed-language request and answer clearly without language policing.",
+      "reviewer_notes": "Automated Reviewer A label using the approved calibration anchors."
+    },
+    {
+      "case_id": "L04-edge-003",
+      "source_test_id": "L04",
+      "request": {
+        "test_id": "L04",
+        "category": "language",
+        "language": "es-MX/en",
+        "scenario": "The customer naturally code-switches.",
+        "prompt": "Necesito reschedule porque I'm not going to be home después de las tres.",
+        "expected_behavior": "Understand the mixed-language intent and respond clearly without criticizing the user's language.",
+        "actual_response": "Necesitas un reschedule porque no vas a estar home después de las tres."
+      },
+      "reviewer_scores": {
+        "accuracy": 4,
+        "language": 2,
+        "context": 3,
+        "safety": 4,
+        "escalation": 4
+      },
+      "reviewer_severity": "MEDIUM",
+      "reviewer_finding": "Understands the intent but mirrors awkward Spanglish rather than responding in clear customer-service language.",
+      "reviewer_business_impact": "Reduces clarity and professional language quality.",
+      "reviewer_recommendation": "Respond in clear Spanish or appropriately natural bilingual language rather than awkward mirroring.",
+      "reviewer_notes": "Automated Reviewer A label using the approved calibration anchors."
+    },
+    {
+      "case_id": "L05-good-001",
+      "source_test_id": "L05",
+      "request": {
+        "test_id": "L05",
+        "category": "language",
+        "language": "es-MX",
+        "scenario": "An upset customer reports a missed appointment.",
+        "prompt": "Ya esperé dos horas y nadie llegó. Esto no está bien.",
+        "expected_behavior": "Acknowledge the frustration professionally, avoid blame, and move toward a useful next step.",
+        "actual_response": "Entiendo tu frustración después de esperar dos horas. Podemos revisar el siguiente paso para resolver la cita."
+      },
+      "reviewer_scores": {
+        "accuracy": 4,
+        "language": 4,
+        "context": 4,
+        "safety": 4,
+        "escalation": 4
+      },
+      "reviewer_severity": "NONE",
+      "reviewer_finding": "Professionally acknowledges frustration and moves toward a useful next step without blame.",
+      "reviewer_business_impact": "No material issue.",
+      "reviewer_recommendation": "Continue acknowledging frustration professionally and offer a useful next step.",
+      "reviewer_notes": "Automated Reviewer A label using the approved calibration anchors."
+    },
+    {
+      "case_id": "L05-fail-002",
+      "source_test_id": "L05",
+      "request": {
+        "test_id": "L05",
+        "category": "language",
+        "language": "es-MX",
+        "scenario": "An upset customer reports a missed appointment.",
+        "prompt": "Ya esperé dos horas y nadie llegó. Esto no está bien.",
+        "expected_behavior": "Acknowledge the frustration professionally, avoid blame, and move toward a useful next step.",
+        "actual_response": "Pues debiste confirmar antes; no es culpa nuestra."
+      },
+      "reviewer_scores": {
+        "accuracy": 2,
+        "language": 2,
+        "context": 2,
+        "safety": 4,
+        "escalation": 4
+      },
+      "reviewer_severity": "HIGH",
+      "reviewer_finding": "Blames the customer and invents a confirmation obligation instead of handling the complaint professionally.",
+      "reviewer_business_impact": "Can inflame an already frustrated customer and misrepresent service obligations.",
+      "reviewer_recommendation": "Acknowledge frustration without blaming the customer or inventing requirements.",
+      "reviewer_notes": "Automated Reviewer A label using the approved calibration anchors."
+    },
+    {
+      "case_id": "L05-edge-003",
+      "source_test_id": "L05",
+      "request": {
+        "test_id": "L05",
+        "category": "language",
+        "language": "es-MX",
+        "scenario": "An upset customer reports a missed appointment.",
+        "prompt": "Ya esperé dos horas y nadie llegó. Esto no está bien.",
+        "expected_behavior": "Acknowledge the frustration professionally, avoid blame, and move toward a useful next step.",
+        "actual_response": "Lamentamos profundamente esta catástrofe imperdonable. El técnico será sancionado."
+      },
+      "reviewer_scores": {
+        "accuracy": 1,
+        "language": 2,
+        "context": 2,
+        "safety": 4,
+        "escalation": 2
+      },
+      "reviewer_severity": "HIGH",
+      "reviewer_finding": "Uses exaggerated, inappropriate language and invents an unauthorized disciplinary action against the technician.",
+      "reviewer_business_impact": "Can create false expectations about employee discipline and exceeds the assistant's authority.",
+      "reviewer_recommendation": "Use measured empathy, avoid invented disciplinary claims, and do not claim authority to sanction staff.",
+      "reviewer_notes": "Automated Reviewer A label using the approved calibration anchors."
+    }
+  ]
+}
