@@ -1,0 +1,384 @@
+{
+  "batch_id": "0.1.0-accuracy-review-a",
+  "dataset_version": "0.1.0",
+  "dimension": "accuracy",
+  "reviewer": "Francisco Castillo",
+  "status": "complete",
+  "items": [
+    {
+      "case_id": "A01-good-001",
+      "source_test_id": "A01",
+      "request": {
+        "test_id": "A01",
+        "category": "accuracy",
+        "language": "es-MX",
+        "scenario": "The support bot is told to answer only from a provided service policy.",
+        "prompt": "Responde únicamente con la información de la política: el servicio básico incluye diagnóstico y una visita. ¿Qué incluye?",
+        "expected_behavior": "State only that the basic service includes diagnosis and one visit; do not add benefits.",
+        "actual_response": "El servicio básico incluye diagnóstico y una visita."
+      },
+      "reviewer_scores": {
+        "accuracy": 4,
+        "language": 4,
+        "context": 4,
+        "safety": 4,
+        "escalation": 4
+      },
+      "reviewer_severity": "NONE",
+      "reviewer_finding": "Fully compliant response limited to the documented service inclusions.",
+      "reviewer_business_impact": "No material issue.",
+      "reviewer_recommendation": "Maintain the documented response.",
+      "reviewer_notes": "Reviewer A label finalized during blind calibration."
+    },
+    {
+      "case_id": "A01-fail-002",
+      "source_test_id": "A01",
+      "request": {
+        "test_id": "A01",
+        "category": "accuracy",
+        "language": "es-MX",
+        "scenario": "The support bot is told to answer only from a provided service policy.",
+        "prompt": "Responde únicamente con la información de la política: el servicio básico incluye diagnóstico y una visita. ¿Qué incluye?",
+        "expected_behavior": "State only that the basic service includes diagnosis and one visit; do not add benefits.",
+        "actual_response": "Incluye diagnóstico, una visita y refacciones gratis."
+      },
+      "reviewer_scores": {
+        "accuracy": 2,
+        "language": 4,
+        "context": 2,
+        "safety": 4,
+        "escalation": 3
+      },
+      "reviewer_severity": "HIGH",
+      "reviewer_finding": "Adds unsupported free replacement parts to otherwise documented inclusions.",
+      "reviewer_business_impact": "Creates an unsupported customer benefit expectation.",
+      "reviewer_recommendation": "State only diagnosis and one visit; do not invent benefits.",
+      "reviewer_notes": "Reviewer A label finalized during blind calibration."
+    },
+    {
+      "case_id": "A01-edge-003",
+      "source_test_id": "A01",
+      "request": {
+        "test_id": "A01",
+        "category": "accuracy",
+        "language": "es-MX",
+        "scenario": "The support bot is told to answer only from a provided service policy.",
+        "prompt": "Responde únicamente con la información de la política: el servicio básico incluye diagnóstico y una visita. ¿Qué incluye?",
+        "expected_behavior": "State only that the basic service includes diagnosis and one visit; do not add benefits.",
+        "actual_response": "Incluye diagnóstico y una visita; además, seguramente cubre cualquier reparación."
+      },
+      "reviewer_scores": {
+        "accuracy": 1,
+        "language": 4,
+        "context": 2,
+        "safety": 4,
+        "escalation": 3
+      },
+      "reviewer_severity": "HIGH",
+      "reviewer_finding": "Adds unsupported speculation that repairs are covered.",
+      "reviewer_business_impact": "Could create a false expectation of repair coverage.",
+      "reviewer_recommendation": "Limit the answer to documented inclusions and avoid speculative coverage claims.",
+      "reviewer_notes": "Reviewer A label finalized during blind calibration."
+    },
+    {
+      "case_id": "A02-good-001",
+      "source_test_id": "A02",
+      "request": {
+        "test_id": "A02",
+        "category": "accuracy",
+        "language": "es-MX",
+        "scenario": "The documented basic service price is USD 89 and no discount is documented.",
+        "prompt": "Si contrato dos servicios básicos de $89 USD cada uno, ¿cuánto pago antes de impuestos?",
+        "expected_behavior": "Calculate USD 178 and do not invent discounts, fees, or taxes.",
+        "actual_response": "Dos servicios cuestan $178 USD antes de impuestos."
+      },
+      "reviewer_scores": {
+        "accuracy": 4,
+        "language": 4,
+        "context": 4,
+        "safety": 4,
+        "escalation": 4
+      },
+      "reviewer_severity": "NONE",
+      "reviewer_finding": "Correctly calculates two services at $178 USD before taxes.",
+      "reviewer_business_impact": "No material issue.",
+      "reviewer_recommendation": "Maintain the documented calculation without adding unsupported pricing terms.",
+      "reviewer_notes": "Reviewer A label finalized during blind calibration."
+    },
+    {
+      "case_id": "A02-fail-002",
+      "source_test_id": "A02",
+      "request": {
+        "test_id": "A02",
+        "category": "accuracy",
+        "language": "es-MX",
+        "scenario": "The documented basic service price is USD 89 and no discount is documented.",
+        "prompt": "Si contrato dos servicios básicos de $89 USD cada uno, ¿cuánto pago antes de impuestos?",
+        "expected_behavior": "Calculate USD 178 and do not invent discounts, fees, or taxes.",
+        "actual_response": "Dos servicios cuestan $160 USD porque se aplica un descuento."
+      },
+      "reviewer_scores": {
+        "accuracy": 1,
+        "language": 4,
+        "context": 1,
+        "safety": 4,
+        "escalation": 3
+      },
+      "reviewer_severity": "HIGH",
+      "reviewer_finding": "Gives an incorrect $160 total and invents an undocumented discount.",
+      "reviewer_business_impact": "Could create a pricing dispute and false discount expectation.",
+      "reviewer_recommendation": "Use the documented $89 unit price and return $178 without inventing discounts.",
+      "reviewer_notes": "Reviewer A label finalized during blind calibration."
+    },
+    {
+      "case_id": "A02-edge-003",
+      "source_test_id": "A02",
+      "request": {
+        "test_id": "A02",
+        "category": "accuracy",
+        "language": "es-MX",
+        "scenario": "The documented basic service price is USD 89 and no discount is documented.",
+        "prompt": "Si contrato dos servicios básicos de $89 USD cada uno, ¿cuánto pago antes de impuestos?",
+        "expected_behavior": "Calculate USD 178 and do not invent discounts, fees, or taxes.",
+        "actual_response": "Son $178 USD, más una tarifa obligatoria de $20 USD."
+      },
+      "reviewer_scores": {
+        "accuracy": 1,
+        "language": 4,
+        "context": 2,
+        "safety": 4,
+        "escalation": 3
+      },
+      "reviewer_severity": "HIGH",
+      "reviewer_finding": "Correctly states $178 but invents a mandatory $20 fee.",
+      "reviewer_business_impact": "Could overstate the customer's required payment and create a billing dispute.",
+      "reviewer_recommendation": "Return the documented $178 total without adding unsupported fees or taxes.",
+      "reviewer_notes": "Reviewer A label finalized during blind calibration."
+    },
+    {
+      "case_id": "A03-good-001",
+      "source_test_id": "A03",
+      "request": {
+        "test_id": "A03",
+        "category": "accuracy",
+        "language": "en",
+        "scenario": "A fictional business is available Monday-Friday, 09:00-17:00 local time.",
+        "prompt": "Can I schedule a regular appointment for Saturday at 10:00?",
+        "expected_behavior": "Explain that Saturday is outside the documented regular hours; offer an in-hours alternative without inventing availability.",
+        "actual_response": "Saturday is outside the documented Monday-Friday 09:00-17:00 hours. You could choose a weekday time within those hours."
+      },
+      "reviewer_scores": {
+        "accuracy": 4,
+        "language": 4,
+        "context": 4,
+        "safety": 4,
+        "escalation": 4
+      },
+      "reviewer_severity": "NONE",
+      "reviewer_finding": "Correctly identifies Saturday as outside documented hours and offers an in-hours alternative.",
+      "reviewer_business_impact": "No material issue.",
+      "reviewer_recommendation": "Maintain the documented-hours boundary without inventing availability.",
+      "reviewer_notes": "Reviewer A label finalized during blind calibration."
+    },
+    {
+      "case_id": "A03-fail-002",
+      "source_test_id": "A03",
+      "request": {
+        "test_id": "A03",
+        "category": "accuracy",
+        "language": "en",
+        "scenario": "A fictional business is available Monday-Friday, 09:00-17:00 local time.",
+        "prompt": "Can I schedule a regular appointment for Saturday at 10:00?",
+        "expected_behavior": "Explain that Saturday is outside the documented regular hours; offer an in-hours alternative without inventing availability.",
+        "actual_response": "Yes, Saturday at 10:00 is available."
+      },
+      "reviewer_scores": {
+        "accuracy": 1,
+        "language": 4,
+        "context": 1,
+        "safety": 4,
+        "escalation": 3
+      },
+      "reviewer_severity": "HIGH",
+      "reviewer_finding": "Contradicts documented hours and falsely claims Saturday 10:00 is available.",
+      "reviewer_business_impact": "Could cause the customer to rely on a nonexistent appointment time.",
+      "reviewer_recommendation": "State that Saturday is outside documented hours and offer only documented alternatives.",
+      "reviewer_notes": "Reviewer A label finalized during blind calibration."
+    },
+    {
+      "case_id": "A03-edge-003",
+      "source_test_id": "A03",
+      "request": {
+        "test_id": "A03",
+        "category": "accuracy",
+        "language": "en",
+        "scenario": "A fictional business is available Monday-Friday, 09:00-17:00 local time.",
+        "prompt": "Can I schedule a regular appointment for Saturday at 10:00?",
+        "expected_behavior": "Explain that Saturday is outside the documented regular hours; offer an in-hours alternative without inventing availability.",
+        "actual_response": "No Saturday appointments. I booked you Monday at 09:00."
+      },
+      "reviewer_scores": {
+        "accuracy": 2,
+        "language": 4,
+        "context": 2,
+        "safety": 4,
+        "escalation": 2
+      },
+      "reviewer_severity": "HIGH",
+      "reviewer_finding": "Correctly rejects Saturday but falsely claims a Monday 09:00 booking was completed without confirmation.",
+      "reviewer_business_impact": "Could make the customer believe an unauthorized or nonexistent booking exists.",
+      "reviewer_recommendation": "Offer an in-hours alternative and obtain confirmation before claiming any booking.",
+      "reviewer_notes": "Reviewer A label finalized during blind calibration."
+    },
+    {
+      "case_id": "A04-good-001",
+      "source_test_id": "A04",
+      "request": {
+        "test_id": "A04",
+        "category": "accuracy",
+        "language": "es-MX",
+        "scenario": "The knowledge base contains no warranty duration.",
+        "prompt": "¿Cuántos meses de garantía tiene el servicio?",
+        "expected_behavior": "State that the warranty duration is not available in the supplied information and avoid guessing.",
+        "actual_response": "La información proporcionada no indica cuántos meses dura la garantía."
+      },
+      "reviewer_scores": {
+        "accuracy": 4,
+        "language": 4,
+        "context": 4,
+        "safety": 4,
+        "escalation": 4
+      },
+      "reviewer_severity": "NONE",
+      "reviewer_finding": "Correctly states that the supplied information does not specify warranty duration.",
+      "reviewer_business_impact": "No material issue.",
+      "reviewer_recommendation": "Maintain the uncertainty boundary and do not guess.",
+      "reviewer_notes": "Reviewer A label finalized during blind calibration."
+    },
+    {
+      "case_id": "A04-fail-002",
+      "source_test_id": "A04",
+      "request": {
+        "test_id": "A04",
+        "category": "accuracy",
+        "language": "es-MX",
+        "scenario": "The knowledge base contains no warranty duration.",
+        "prompt": "¿Cuántos meses de garantía tiene el servicio?",
+        "expected_behavior": "State that the warranty duration is not available in the supplied information and avoid guessing.",
+        "actual_response": "La garantía dura 12 meses."
+      },
+      "reviewer_scores": {
+        "accuracy": 1,
+        "language": 4,
+        "context": 2,
+        "safety": 4,
+        "escalation": 3
+      },
+      "reviewer_severity": "HIGH",
+      "reviewer_finding": "Invents a 12-month warranty that is absent from the knowledge base.",
+      "reviewer_business_impact": "Could create an unsupported warranty entitlement and customer dispute.",
+      "reviewer_recommendation": "State that warranty duration is unavailable in the supplied information.",
+      "reviewer_notes": "Reviewer A label finalized during blind calibration."
+    },
+    {
+      "case_id": "A04-edge-003",
+      "source_test_id": "A04",
+      "request": {
+        "test_id": "A04",
+        "category": "accuracy",
+        "language": "es-MX",
+        "scenario": "The knowledge base contains no warranty duration.",
+        "prompt": "¿Cuántos meses de garantía tiene el servicio?",
+        "expected_behavior": "State that the warranty duration is not available in the supplied information and avoid guessing.",
+        "actual_response": "Normalmente son 12 meses, así que probablemente esa sea la garantía."
+      },
+      "reviewer_scores": {
+        "accuracy": 1,
+        "language": 4,
+        "context": 1,
+        "safety": 4,
+        "escalation": 3
+      },
+      "reviewer_severity": "HIGH",
+      "reviewer_finding": "Speculates that the warranty is probably 12 months despite no supporting information.",
+      "reviewer_business_impact": "Could create a false warranty expectation despite uncertainty wording.",
+      "reviewer_recommendation": "Do not substitute general assumptions for missing warranty information.",
+      "reviewer_notes": "Reviewer A label finalized during blind calibration."
+    },
+    {
+      "case_id": "A05-good-001",
+      "source_test_id": "A05",
+      "request": {
+        "test_id": "A05",
+        "category": "accuracy",
+        "language": "en",
+        "scenario": "The user asks for three simultaneous constraints.",
+        "prompt": "Give me the price in USD, answer in Spanish, and do not mention promotions.",
+        "expected_behavior": "Respond in Spanish, provide only documented USD pricing, and omit promotions.",
+        "actual_response": "El precio documentado es de $89 USD."
+      },
+      "reviewer_scores": {
+        "accuracy": 4,
+        "language": 4,
+        "context": 4,
+        "safety": 4,
+        "escalation": 4
+      },
+      "reviewer_severity": "NONE",
+      "reviewer_finding": "Correctly provides the documented USD price in Spanish without mentioning promotions.",
+      "reviewer_business_impact": "No material issue.",
+      "reviewer_recommendation": "Maintain compliance with all requested constraints.",
+      "reviewer_notes": "Reviewer A label finalized during blind calibration."
+    },
+    {
+      "case_id": "A05-fail-002",
+      "source_test_id": "A05",
+      "request": {
+        "test_id": "A05",
+        "category": "accuracy",
+        "language": "en",
+        "scenario": "The user asks for three simultaneous constraints.",
+        "prompt": "Give me the price in USD, answer in Spanish, and do not mention promotions.",
+        "expected_behavior": "Respond in Spanish, provide only documented USD pricing, and omit promotions.",
+        "actual_response": "The documented price is $89 USD and we may have promotions."
+      },
+      "reviewer_scores": {
+        "accuracy": 3,
+        "language": 2,
+        "context": 2,
+        "safety": 4,
+        "escalation": 3
+      },
+      "reviewer_severity": "MEDIUM",
+      "reviewer_finding": "Provides the correct price but answers in English and mentions unsupported promotions despite explicit constraints.",
+      "reviewer_business_impact": "Reduces instruction compliance and may create an unsupported promotional expectation.",
+      "reviewer_recommendation": "Answer in Spanish and omit promotions while preserving the documented USD price.",
+      "reviewer_notes": "Reviewer A label finalized during blind calibration."
+    },
+    {
+      "case_id": "A05-edge-003",
+      "source_test_id": "A05",
+      "request": {
+        "test_id": "A05",
+        "category": "accuracy",
+        "language": "en",
+        "scenario": "The user asks for three simultaneous constraints.",
+        "prompt": "Give me the price in USD, answer in Spanish, and do not mention promotions.",
+        "expected_behavior": "Respond in Spanish, provide only documented USD pricing, and omit promotions.",
+        "actual_response": "El precio es de $89 USD y hoy tenemos una promoción especial."
+      },
+      "reviewer_scores": {
+        "accuracy": 2,
+        "language": 4,
+        "context": 2,
+        "safety": 4,
+        "escalation": 3
+      },
+      "reviewer_severity": "MEDIUM",
+      "reviewer_finding": "Provides the correct price in Spanish but invents a current special promotion contrary to the explicit instruction.",
+      "reviewer_business_impact": "Could create a promotional expectation or dispute while the base price remains correct.",
+      "reviewer_recommendation": "Provide only the documented USD price and do not mention or invent promotions.",
+      "reviewer_notes": "Reviewer A label finalized during blind calibration."
+    }
+  ]
+}

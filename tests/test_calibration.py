@@ -34,3 +34,19 @@ def test_default_dataset_is_built_when_generated_file_is_missing(tmp_path, monke
     assert {x.source_test_id for x in batch.items}=={"A01","A02","A03","A04","A05"}
     raw=(tmp_path/"review.json").read_text(encoding="utf-8")
     assert '"gold"' not in raw and '"proposal"' not in raw and '"evaluator"' not in raw
+
+
+def test_completed_accuracy_reviewer_a_batch_is_valid():
+    from app.models.calibration import BlindReviewBatch
+    batch = BlindReviewBatch.model_validate_json(
+        Path("validation/review/accuracy_review_a.json").read_text(encoding="utf-8")
+    )
+    assert batch.reviewer == "Francisco Castillo"
+    assert batch.status == "complete"
+    assert batch.dimension == "accuracy"
+    assert len(batch.items) == 15
+    validate_completed_batch(batch)
+    counts = {}
+    for item in batch.items:
+        counts[item.source_test_id] = counts.get(item.source_test_id, 0) + 1
+    assert counts == {"A01": 3, "A02": 3, "A03": 3, "A04": 3, "A05": 3}
