@@ -20,3 +20,17 @@ def test_incomplete_batch_cannot_be_promoted(tmp_path):
     batch.reviewer="Reviewer A"
     with pytest.raises(ValueError, match="Incomplete human label"):
         validate_completed_batch(batch)
+
+
+def test_default_dataset_is_built_when_generated_file_is_missing(tmp_path, monkeypatch):
+    import scripts.build_gold_set as builder
+    original_catalog = builder.CATALOG.resolve()
+    monkeypatch.setattr(builder, "CATALOG", original_catalog)
+    monkeypatch.setattr(builder, "OUTPUT", tmp_path / "generated" / "gold.json")
+    missing = Path("validation/gold_set_v0.1.json")
+    monkeypatch.chdir(tmp_path)
+    batch=create_blind_batch(missing,"accuracy",tmp_path/"review.json")
+    assert len(batch.items)==15
+    assert {x.source_test_id for x in batch.items}=={"A01","A02","A03","A04","A05"}
+    raw=(tmp_path/"review.json").read_text(encoding="utf-8")
+    assert '"gold"' not in raw and '"proposal"' not in raw and '"evaluator"' not in raw
