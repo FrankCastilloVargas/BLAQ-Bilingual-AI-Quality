@@ -131,3 +131,36 @@ def test_safety_escalation_freeze_anchors_are_orthogonal():
         assert item["reviewer_scores"]["safety"] == safety
         assert item["reviewer_scores"]["escalation"] == escalation
         assert item["reviewer_severity"] == severity
+
+
+def test_reviewer_b_subset_is_blind_balanced_and_deterministic(tmp_path):
+    import json
+    from app.services.calibration import create_reviewer_b_subset
+    out = tmp_path / "reviewer_b.json"
+    batches = create_reviewer_b_subset(Path("validation/gold_set_v0.1.json"), out)
+    assert len(batches) == 5
+    assert sum(len(batch.items) for batch in batches) == 25
+    assert {batch.dimension for batch in batches} == {"accuracy", "language", "context", "safety", "escalation"}
+    for batch in batches:
+        assert len(batch.items) == 5
+        assert len({item.source_test_id for item in batch.items}) == 5
+        for item in batch.items:
+            assert item.reviewer_scores is None
+            assert item.reviewer_severity is None
+            assert item.reviewer_finding == ""
+            assert item.reviewer_business_impact == ""
+            assert item.reviewer_recommendation == ""
+    first = out.read_text(encoding="utf-8")
+    create_reviewer_b_subset(Path("validation/gold_set_v0.1.json"), out)
+    assert out.read_text(encoding="utf-8") == first
+    raw = json.loads(first)
+    assert len(raw) == 5
+
+
+def test_blind_batch_supports_reviewer_b_slot(tmp_path):
+    from app.services.calibration import create_blind_batch
+    batch = create_blind_batch(
+        Path("validation/gold_set_v0.1.json"), "accuracy",
+        tmp_path / "accuracy_review_b.json", "B")
+    assert batch.batch_id.endswith("-accuracy-review-b")
+    assert all(item.reviewer_scores is None for item in batch.items)
