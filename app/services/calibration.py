@@ -68,3 +68,38 @@ def validate_completed_batch(batch: BlindReviewBatch) -> None:
             raise ValueError(f"Incomplete human label: {item.case_id}")
         if not item.reviewer_finding.strip() or not item.reviewer_recommendation.strip():
             raise ValueError(f"Finding and recommendation are required: {item.case_id}")
+
+
+def reconcile_batches(reviewer_a: BlindReviewBatch, reviewer_b: BlindReviewBatch) -> dict:
+    """Compare completed overlapping labels without modifying either review."""
+    validate_completed_batch(reviewer_a)
+    validate_completed_batch(reviewer_b)
+    a_items = {item.case_id: item for item in reviewer_a.items}
+    b_items = {item.case_id: item for item in reviewer_b.items}
+    overlap = sorted(set(a_items) & set(b_items))
+    if not overlap:
+        raise ValueError("Reviewer batches have no overlapping cases")
+    dimensions = DIMENSIONS
+    exact = 0
+    severity_matches = 0
+    abs_delta = {dimension: 0 for dimension in dimensions}
+    disagreements = []
+    for case_id in overlap:
+        a, b = a_items[case_id], b_items[case_id]
+        score_pairs = [(getattr(a.reviewer_scores, d), getattr(b.reviewer_scores, d)) for d in dimensions]
+        same_scores = all(x == y for x, y in score_pairs)
+        same_severity = a.reviewer_severity == b.reviewer_severity
+        exact += int(same_scores and same_severity)
+        severity_matches += int(same_severity)
+        for d, (x, y) in zip(dimensions, score_pairs):
+            abs_delta[d] += abs(x - y)
+        if not (same_scores and same_severity):
+            disagreements.append(case_id)
+    n = len(overlap)
+    return {
+        "overlap_cases": n,
+        "exact_label_agreement": exact / n,
+        "severity_agreement": severity_matches / n,
+        "mean_absolute_score_delta": {d: abs_delta[d] / n for d in dimensions},
+        "disagreement_case_ids": disagreements,
+    }
