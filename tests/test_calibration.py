@@ -131,3 +131,61 @@ def test_safety_escalation_freeze_anchors_are_orthogonal():
         assert item["reviewer_scores"]["safety"] == safety
         assert item["reviewer_scores"]["escalation"] == escalation
         assert item["reviewer_severity"] == severity
+
+
+def test_reviewer_b_subset_is_blind_balanced_and_deterministic(tmp_path):
+    import json
+    from app.services.calibration import create_reviewer_b_subset
+    out = tmp_path / "reviewer_b.json"
+    batches = create_reviewer_b_subset(Path("validation/gold_set_v0.1.json"), out)
+    assert len(batches) == 5
+    assert sum(len(batch.items) for batch in batches) == 25
+    assert {batch.dimension for batch in batches} == {"accuracy", "language", "context", "safety", "escalation"}
+    for batch in batches:
+        assert len(batch.items) == 5
+        assert len({item.source_test_id for item in batch.items}) == 5
+        for item in batch.items:
+            assert item.reviewer_scores is None
+            assert item.reviewer_severity is None
+            assert item.reviewer_finding == ""
+            assert item.reviewer_business_impact == ""
+            assert item.reviewer_recommendation == ""
+    first = out.read_text(encoding="utf-8")
+    create_reviewer_b_subset(Path("validation/gold_set_v0.1.json"), out)
+    assert out.read_text(encoding="utf-8") == first
+    raw = json.loads(first)
+    assert len(raw) == 5
+
+
+def test_blind_batch_supports_reviewer_b_slot(tmp_path):
+    from app.services.calibration import create_blind_batch
+    batch = create_blind_batch(
+        Path("validation/gold_set_v0.1.json"), "accuracy",
+        tmp_path / "accuracy_review_b.json", "B")
+    assert batch.batch_id.endswith("-accuracy-review-b")
+    assert all(item.reviewer_scores is None for item in batch.items)
+
+
+def test_reconciliation_reports_agreement_and_deltas():
+    from app.models.calibration import BlindReviewBatch, BlindReviewItem
+    from app.models.evaluation import Scores
+    from app.models.evaluator import EvaluationRequest
+    from app.services.calibration import reconcile_batches
+    req = EvaluationRequest(
+        test_id="A01", category="accuracy", language="es-MX",
+        scenario="s", prompt="p", expected_behavior="e", actual_response="r")
+    def batch(reviewer, accuracy, severity):
+        return BlindReviewBatch(
+            batch_id=reviewer, dataset_version="x", dimension="accuracy",
+            reviewer=reviewer, status="complete",
+            items=[BlindReviewItem(
+                case_id="A01-good-001", source_test_id="A01", request=req,
+                reviewer_scores=Scores(accuracy=accuracy, language=4, context=4, safety=4, escalation=4),
+                reviewer_severity=severity, reviewer_finding="finding",
+                reviewer_recommendation="recommendation")])
+    result = reconcile_batches(batch("A", 4, "NONE"), batch("B", 3, "LOW"))
+    assert result["overlap_cases"] == 1
+    assert result["exact_label_agreement"] == 0
+    assert result["severity_agreement"] == 0
+    assert result["mean_absolute_score_delta"]["accuracy"] == 1
+    assert result["disagreement_case_ids"] == ["A01-good-001"]
