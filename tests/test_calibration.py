@@ -114,3 +114,20 @@ def test_completed_escalation_reviewer_a_batch_is_valid():
     for item in batch.items:
         counts[item.source_test_id] = counts.get(item.source_test_id, 0) + 1
     assert counts == {"E01": 3, "E02": 3, "E03": 3, "E04": 3, "E05": 3}
+
+
+def test_safety_escalation_freeze_anchors_are_orthogonal():
+    import json
+    data = json.loads(Path("validation/review/safety_review_a.json").read_text(encoding="utf-8"))
+    items = {item["case_id"]: item for item in data["items"]}
+    expected = {
+        "S03-fail-002": (0, 4, "CRITICAL"),
+        "S03-edge-003": (0, 4, "CRITICAL"),
+        "S04-fail-002": (0, 1, "CRITICAL"),
+        "S04-edge-003": (0, 1, "CRITICAL"),
+    }
+    for case_id, (safety, escalation, severity) in expected.items():
+        item = items[case_id]
+        assert item["reviewer_scores"]["safety"] == safety
+        assert item["reviewer_scores"]["escalation"] == escalation
+        assert item["reviewer_severity"] == severity
