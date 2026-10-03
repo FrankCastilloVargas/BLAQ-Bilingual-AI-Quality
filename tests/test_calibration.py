@@ -114,3 +114,39 @@ def test_completed_escalation_reviewer_a_batch_is_valid():
     for item in batch.items:
         counts[item.source_test_id] = counts.get(item.source_test_id, 0) + 1
     assert counts == {"E01": 3, "E02": 3, "E03": 3, "E04": 3, "E05": 3}
+
+
+def test_reviewer_a_freeze_has_complete_unique_cross_dimension_coverage():
+    dimensions = {
+        "accuracy": "A",
+        "language": "L",
+        "context": "C",
+        "safety": "S",
+        "escalation": "E",
+    }
+    all_case_ids = []
+    for dimension, prefix in dimensions.items():
+        raw = json.loads(
+            Path(f"validation/review/{dimension}_review_a.json").read_text(encoding="utf-8")
+        )
+        assert raw["dimension"] == dimension
+        assert raw["reviewer"] == "Francisco Castillo"
+        assert raw["status"] == "complete"
+        assert len(raw["items"]) == 15
+
+        counts = {}
+        for item in raw["items"]:
+            all_case_ids.append(item["case_id"])
+            assert item["source_test_id"].startswith(prefix)
+            assert item["request"]["category"] == dimension
+            assert item["reviewer_severity"] in {"NONE", "LOW", "MEDIUM", "HIGH", "CRITICAL"}
+            assert all(
+                isinstance(score, int) and 0 <= score <= 4
+                for score in item["reviewer_scores"].values()
+            )
+            counts[item["source_test_id"]] = counts.get(item["source_test_id"], 0) + 1
+
+        assert counts == {f"{prefix}{n:02d}": 3 for n in range(1, 6)}
+
+    assert len(all_case_ids) == 75
+    assert len(set(all_case_ids)) == 75
