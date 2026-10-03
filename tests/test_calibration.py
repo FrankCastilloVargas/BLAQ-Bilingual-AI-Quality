@@ -219,3 +219,26 @@ def test_reviewer_a_freeze_has_complete_unique_cross_dimension_coverage():
         assert counts == {f"{prefix}{n:02d}": 3 for n in range(1, 6)}
     assert len(all_case_ids) == 75
     assert len(set(all_case_ids)) == 75
+
+
+def test_committed_reviewer_b_packet_is_blind_and_complete():
+    import json
+    raw = json.loads(Path("validation/review/reviewer_b_blind_subset.json").read_text(encoding="utf-8"))
+    assert len(raw) == 5
+    assert sum(len(batch["items"]) for batch in raw) == 25
+    assert {batch["dimension"] for batch in raw} == {"accuracy", "language", "context", "safety", "escalation"}
+    seen = set()
+    for batch in raw:
+        assert batch["reviewer"] == ""
+        assert batch["status"] == "pending"
+        assert len(batch["items"]) == 5
+        assert len({item["source_test_id"] for item in batch["items"]}) == 5
+        for item in batch["items"]:
+            assert item["case_id"] not in seen
+            seen.add(item["case_id"])
+            assert item["reviewer_scores"] is None
+            assert item["reviewer_severity"] is None
+            assert item["reviewer_finding"] == ""
+            assert item["reviewer_business_impact"] == ""
+            assert item["reviewer_recommendation"] == ""
+            assert item["reviewer_notes"] == ""
