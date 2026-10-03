@@ -153,7 +153,7 @@
       "reviewer_finding": "Preserves inspection and customer approval requirements accurately and naturally.",
       "reviewer_business_impact": "No material issue.",
       "reviewer_recommendation": "Maintain the accurate natural translation.",
-      "reviewer_notes": "Reviewer A label finalized during calibration; later cases automated using the approved calibration anchors."
+      "reviewer_notes": "Automated Reviewer A label using the approved calibration anchors."
     },
     {
       "case_id": "L03-good-001",
