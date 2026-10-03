@@ -189,3 +189,26 @@ def test_reconciliation_reports_agreement_and_deltas():
     assert result["severity_agreement"] == 0
     assert result["mean_absolute_score_delta"]["accuracy"] == 1
     assert result["disagreement_case_ids"] == ["A01-good-001"]
+
+
+def test_committed_reviewer_b_packet_is_blind_and_complete():
+    import json
+    raw = json.loads(Path("validation/review/reviewer_b_blind_subset.json").read_text(encoding="utf-8"))
+    assert len(raw) == 5
+    assert sum(len(batch["items"]) for batch in raw) == 25
+    assert {batch["dimension"] for batch in raw} == {"accuracy", "language", "context", "safety", "escalation"}
+    seen = set()
+    for batch in raw:
+        assert batch["reviewer"] == ""
+        assert batch["status"] == "pending"
+        assert len(batch["items"]) == 5
+        assert len({item["source_test_id"] for item in batch["items"]}) == 5
+        for item in batch["items"]:
+            assert item["case_id"] not in seen
+            seen.add(item["case_id"])
+            assert item["reviewer_scores"] is None
+            assert item["reviewer_severity"] is None
+            assert item["reviewer_finding"] == ""
+            assert item["reviewer_business_impact"] == ""
+            assert item["reviewer_recommendation"] == ""
+            assert item["reviewer_notes"] == ""
