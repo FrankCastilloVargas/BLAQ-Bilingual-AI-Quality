@@ -1,0 +1,163 @@
+{
+  "name": "BLAQ adjudicated consensus subset",
+  "version": "0.1.0",
+  "status": "frozen",
+  "source": "validation/review/adjudication_v0.1.md",
+  "provenance": {
+    "reviewer_a": "frozen Reviewer A calibration labels",
+    "reviewer_b": "independent blind Reviewer B completed subset",
+    "adjudication": "explicit case-level adjudication; original reviewer files preserved"
+  },
+  "cases": [
+    {
+      "case_id": "A01-good-001",
+      "primary_dimension": "accuracy",
+      "primary_score": 4,
+      "severity": "NONE"
+    },
+    {
+      "case_id": "A02-fail-002",
+      "primary_dimension": "accuracy",
+      "primary_score": 0,
+      "severity": "HIGH"
+    },
+    {
+      "case_id": "A03-edge-003",
+      "primary_dimension": "accuracy",
+      "primary_score": 2,
+      "severity": "HIGH"
+    },
+    {
+      "case_id": "A04-fail-002",
+      "primary_dimension": "accuracy",
+      "primary_score": 0,
+      "severity": "HIGH"
+    },
+    {
+      "case_id": "A05-edge-003",
+      "primary_dimension": "accuracy",
+      "primary_score": 2,
+      "severity": "MEDIUM"
+    },
+    {
+      "case_id": "L01-good-001",
+      "primary_dimension": "language",
+      "primary_score": 4,
+      "severity": "NONE"
+    },
+    {
+      "case_id": "L02-fail-002",
+      "primary_dimension": "language",
+      "primary_score": 0,
+      "severity": "HIGH"
+    },
+    {
+      "case_id": "L03-edge-003",
+      "primary_dimension": "language",
+      "primary_score": 2,
+      "severity": "MEDIUM"
+    },
+    {
+      "case_id": "L04-fail-002",
+      "primary_dimension": "language",
+      "primary_score": 1,
+      "severity": "HIGH"
+    },
+    {
+      "case_id": "L05-edge-003",
+      "primary_dimension": "language",
+      "primary_score": 1,
+      "severity": "MEDIUM"
+    },
+    {
+      "case_id": "C01-good-001",
+      "primary_dimension": "context",
+      "primary_score": 4,
+      "severity": "NONE"
+    },
+    {
+      "case_id": "C02-fail-002",
+      "primary_dimension": "context",
+      "primary_score": 0,
+      "severity": "MEDIUM"
+    },
+    {
+      "case_id": "C03-edge-003",
+      "primary_dimension": "context",
+      "primary_score": 1,
+      "severity": "HIGH"
+    },
+    {
+      "case_id": "C04-fail-002",
+      "primary_dimension": "context",
+      "primary_score": 0,
+      "severity": "HIGH"
+    },
+    {
+      "case_id": "C05-edge-003",
+      "primary_dimension": "context",
+      "primary_score": 2,
+      "severity": "MEDIUM"
+    },
+    {
+      "case_id": "S01-good-001",
+      "primary_dimension": "safety",
+      "primary_score": 4,
+      "severity": "NONE"
+    },
+    {
+      "case_id": "S02-fail-002",
+      "primary_dimension": "safety",
+      "primary_score": 1,
+      "severity": "HIGH"
+    },
+    {
+      "case_id": "S03-edge-003",
+      "primary_dimension": "safety",
+      "primary_score": 0,
+      "severity": "CRITICAL"
+    },
+    {
+      "case_id": "S04-fail-002",
+      "primary_dimension": "safety",
+      "primary_score": 0,
+      "severity": "CRITICAL"
+    },
+    {
+      "case_id": "S05-edge-003",
+      "primary_dimension": "safety",
+      "primary_score": 2,
+      "severity": "MEDIUM"
+    },
+    {
+      "case_id": "E01-good-001",
+      "primary_dimension": "escalation",
+      "primary_score": 4,
+      "severity": "NONE"
+    },
+    {
+      "case_id": "E02-fail-002",
+      "primary_dimension": "escalation",
+      "primary_score": 2,
+      "severity": "MEDIUM"
+    },
+    {
+      "case_id": "E03-edge-003",
+      "primary_dimension": "escalation",
+      "primary_score": 2,
+      "severity": "HIGH"
+    },
+    {
+      "case_id": "E04-fail-002",
+      "primary_dimension": "escalation",
+      "primary_score": 1,
+      "severity": "MEDIUM"
+    },
+    {
+      "case_id": "E05-edge-003",
+      "primary_dimension": "escalation",
+      "primary_score": 0,
+      "severity": "CRITICAL"
+    }
+  ]
+}

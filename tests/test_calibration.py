@@ -242,3 +242,23 @@ def test_committed_reviewer_b_packet_is_blind_and_complete():
             assert item["reviewer_business_impact"] == ""
             assert item["reviewer_recommendation"] == ""
             assert item["reviewer_notes"] == ""
+
+
+def test_frozen_consensus_subset_matches_adjudication():
+    import json
+    data = json.loads(Path("validation/consensus/consensus_v0.1.json").read_text(encoding="utf-8"))
+    assert data["version"] == "0.1.0"
+    assert data["status"] == "frozen"
+    assert data["source"] == "validation/review/adjudication_v0.1.md"
+    cases = data["cases"]
+    assert len(cases) == 25
+    assert len({case["case_id"] for case in cases}) == 25
+    assert {case["primary_dimension"] for case in cases} == {"accuracy", "language", "context", "safety", "escalation"}
+    assert all(0 <= case["primary_score"] <= 4 for case in cases)
+    assert all(case["severity"] in {"NONE", "LOW", "MEDIUM", "HIGH", "CRITICAL"} for case in cases)
+    totals = {
+        dimension: sum(case["primary_score"] for case in cases if case["primary_dimension"] == dimension)
+        for dimension in {"accuracy", "language", "context", "safety", "escalation"}
+    }
+    assert totals == {"accuracy": 8, "language": 8, "context": 7, "safety": 7, "escalation": 9}
+    assert sum(totals.values()) == 39
