@@ -219,3 +219,28 @@ def test_reviewer_a_freeze_has_complete_unique_cross_dimension_coverage():
         assert counts == {f"{prefix}{n:02d}": 3 for n in range(1, 6)}
     assert len(all_case_ids) == 75
     assert len(set(all_case_ids)) == 75
+
+
+def test_persisted_reviewer_b_subset_remains_blind_and_complete():
+    raw_text = Path("validation/review/reviewer_b_blind_subset.json").read_text(encoding="utf-8")
+    assert '"gold"' not in raw_text
+    assert '"proposal"' not in raw_text
+    assert '"evaluator"' not in raw_text
+    batches = json.loads(raw_text)
+    assert len(batches) == 5
+    assert sum(len(batch["items"]) for batch in batches) == 25
+    assert {batch["dimension"] for batch in batches} == {"accuracy", "language", "context", "safety", "escalation"}
+    case_ids = []
+    for batch in batches:
+        assert batch["reviewer"] == ""
+        assert batch["status"] == "pending"
+        assert len(batch["items"]) == 5
+        assert len({item["source_test_id"] for item in batch["items"]}) == 5
+        for item in batch["items"]:
+            case_ids.append(item["case_id"])
+            assert item["reviewer_scores"] is None
+            assert item["reviewer_severity"] is None
+            assert item["reviewer_finding"] == ""
+            assert item["reviewer_business_impact"] == ""
+            assert item["reviewer_recommendation"] == ""
+    assert len(case_ids) == len(set(case_ids)) == 25
