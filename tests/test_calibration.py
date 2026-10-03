@@ -164,3 +164,28 @@ def test_blind_batch_supports_reviewer_b_slot(tmp_path):
         tmp_path / "accuracy_review_b.json", "B")
     assert batch.batch_id.endswith("-accuracy-review-b")
     assert all(item.reviewer_scores is None for item in batch.items)
+
+
+def test_reconciliation_reports_agreement_and_deltas():
+    from app.models.calibration import BlindReviewBatch, BlindReviewItem
+    from app.models.evaluation import Scores
+    from app.models.evaluator import EvaluationRequest
+    from app.services.calibration import reconcile_batches
+    req = EvaluationRequest(
+        test_id="A01", category="accuracy", language="es-MX",
+        scenario="s", prompt="p", expected_behavior="e", actual_response="r")
+    def batch(reviewer, accuracy, severity):
+        return BlindReviewBatch(
+            batch_id=reviewer, dataset_version="x", dimension="accuracy",
+            reviewer=reviewer, status="complete",
+            items=[BlindReviewItem(
+                case_id="A01-good-001", source_test_id="A01", request=req,
+                reviewer_scores=Scores(accuracy=accuracy, language=4, context=4, safety=4, escalation=4),
+                reviewer_severity=severity, reviewer_finding="finding",
+                reviewer_recommendation="recommendation")])
+    result = reconcile_batches(batch("A", 4, "NONE"), batch("B", 3, "LOW"))
+    assert result["overlap_cases"] == 1
+    assert result["exact_label_agreement"] == 0
+    assert result["severity_agreement"] == 0
+    assert result["mean_absolute_score_delta"]["accuracy"] == 1
+    assert result["disagreement_case_ids"] == ["A01-good-001"]
