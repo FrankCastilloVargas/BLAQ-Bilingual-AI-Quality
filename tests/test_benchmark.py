@@ -58,3 +58,16 @@ def test_runner_loads_exact_blind_subset_requests():
     assert len({case_id for case_id, _ in rows}) == 25
     assert {request.category for _, request in rows} == {"accuracy", "language", "context", "safety", "escalation"}
     assert all(request.actual_response for _, request in rows)
+
+
+def test_live_benchmark_requires_explicit_hybrid_configuration(monkeypatch):
+    from scripts.run_live_benchmark import require_live_semantic_config
+    monkeypatch.delenv("BLAQ_EVALUATOR", raising=False)
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    with pytest.raises(RuntimeError, match="BLAQ_EVALUATOR"):
+        require_live_semantic_config()
+    monkeypatch.setenv("BLAQ_EVALUATOR", "hybrid-openai")
+    with pytest.raises(RuntimeError, match="OPENAI_API_KEY"):
+        require_live_semantic_config()
+    monkeypatch.setenv("OPENAI_API_KEY", "test-only")
+    require_live_semantic_config()
