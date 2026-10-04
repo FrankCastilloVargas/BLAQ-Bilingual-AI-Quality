@@ -49,3 +49,12 @@ def test_benchmark_rejects_incomplete_predictions():
     consensus = load_consensus(CONSENSUS)
     with pytest.raises(ValueError, match="coverage mismatch"):
         benchmark_predictions(consensus, predictions_from_consensus()[:-1])
+
+
+def test_runner_loads_exact_blind_subset_requests():
+    from scripts.run_consensus_evaluator import load_requests
+    rows = load_requests()
+    assert len(rows) == 25
+    assert len({case_id for case_id, _ in rows}) == 25
+    assert {request.category for _, request in rows} == {"accuracy", "language", "context", "safety", "escalation"}
+    assert all(request.actual_response for _, request in rows)
