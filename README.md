@@ -68,3 +68,24 @@ The MVP now includes:
 - Explicit HIGH/CRITICAL finding visibility independent of the numeric score
 
 The included scenarios describe a fictional customer-service environment. They are templates and must be customized against a real client's documented policies before a paid audit.
+
+
+## Frozen-consensus evaluator benchmark
+
+The 25-case calibration subset is frozen separately from evaluator predictions. To run a live Hybrid/OpenAI benchmark, configure the evaluator explicitly and keep credentials out of the repository:
+
+```bash
+export BLAQ_EVALUATOR=hybrid-openai
+export OPENAI_API_KEY=...
+python scripts/run_live_benchmark.py
+```
+
+On PowerShell:
+
+```powershell
+$env:BLAQ_EVALUATOR="hybrid-openai"
+$env:OPENAI_API_KEY="..."
+python scripts/run_live_benchmark.py
+```
+
+The command writes evaluator predictions and a benchmark report under `validation/benchmark/`. It reports exact primary-score agreement, ±1 agreement, mean absolute error, severity agreement, and per-dimension metrics. The frozen consensus labels are not supplied to the evaluator during inference.
