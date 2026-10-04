@@ -71,3 +71,11 @@ def test_live_benchmark_requires_explicit_hybrid_configuration(monkeypatch):
         require_live_semantic_config()
     monkeypatch.setenv("OPENAI_API_KEY", "test-only")
     require_live_semantic_config()
+
+
+def test_live_benchmark_outputs_are_git_ignored():
+    ignore = open(".gitignore", encoding="utf-8").read()
+    assert "results/" in ignore
+    from scripts.run_live_benchmark import DEFAULT_PREDICTIONS, DEFAULT_REPORT
+    assert str(DEFAULT_PREDICTIONS).startswith("results/")
+    assert str(DEFAULT_REPORT).startswith("results/")
