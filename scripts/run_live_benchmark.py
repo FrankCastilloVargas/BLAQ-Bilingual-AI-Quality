@@ -1,13 +1,14 @@
 import argparse
 import json
 import os
+from datetime import datetime, timezone
 from pathlib import Path
 
 from app.services.benchmark import benchmark_files
 from scripts.run_consensus_evaluator import DEFAULT_PACKET, run
 
-DEFAULT_PREDICTIONS = Path("validation/benchmark/evaluator_predictions.json")
-DEFAULT_REPORT = Path("validation/benchmark/evaluator_benchmark.json")
+DEFAULT_PREDICTIONS = Path("results/benchmark/evaluator_predictions.json")
+DEFAULT_REPORT = Path("results/benchmark/evaluator_benchmark.json")
 DEFAULT_CONSENSUS = Path("validation/consensus/consensus_v0.1.json")
 
 
@@ -20,8 +21,19 @@ def require_live_semantic_config() -> None:
 
 def execute(packet: Path, predictions: Path, consensus: Path, report: Path) -> dict:
     require_live_semantic_config()
-    run(packet, predictions)
+    prediction_rows = run(packet, predictions)
     result = benchmark_files(consensus, predictions)
+    consensus_data = json.loads(consensus.read_text(encoding="utf-8"))
+    evaluators = sorted({row["evaluator"] for row in prediction_rows})
+    result["run_metadata"] = {
+        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+        "evaluator": evaluators[0] if len(evaluators) == 1 else evaluators,
+        "model": os.getenv("OPENAI_MODEL", "gpt-5.6-luna"),
+        "consensus_version": consensus_data["version"],
+        "consensus_status": consensus_data["status"],
+        "case_count": len(prediction_rows),
+        "generated_artifact": True,
+    }
     report.parent.mkdir(parents=True, exist_ok=True)
     report.write_text(json.dumps(result, indent=2), encoding="utf-8")
     return result
