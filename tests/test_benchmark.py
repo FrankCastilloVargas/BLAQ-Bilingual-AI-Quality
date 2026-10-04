@@ -79,3 +79,19 @@ def test_live_benchmark_outputs_are_git_ignored():
     from scripts.run_live_benchmark import DEFAULT_PREDICTIONS, DEFAULT_REPORT
     assert str(DEFAULT_PREDICTIONS).startswith("results/")
     assert str(DEFAULT_REPORT).startswith("results/")
+
+
+def test_runner_exposes_only_evaluation_request_not_reviewer_labels():
+    from app.models.evaluator import EvaluationRequest
+    from scripts.run_consensus_evaluator import load_requests
+    rows = load_requests()
+    allowed = set(EvaluationRequest.model_fields)
+    forbidden = {
+        "reviewer_scores", "reviewer_severity", "reviewer_finding",
+        "reviewer_business_impact", "reviewer_recommendation", "reviewer_notes",
+        "gold", "consensus", "primary_score",
+    }
+    for _, request in rows:
+        payload = request.model_dump()
+        assert set(payload) == allowed
+        assert not (set(payload) & forbidden)
