@@ -40,7 +40,7 @@ def run(packet_path: Path, output_path: Path) -> list[dict]:
 def main():
     parser = argparse.ArgumentParser(description="Run the configured BLAQ evaluator on the frozen 25-case calibration subset.")
     parser.add_argument("--packet", type=Path, default=DEFAULT_PACKET)
-    parser.add_argument("--output", type=Path, default=Path("validation/benchmark/evaluator_predictions.json"))
+    parser.add_argument("--output", type=Path, default=Path("results/benchmark/evaluator_predictions.json"))
     args = parser.parse_args()
     predictions = run(args.packet, args.output)
     print(f"Wrote {len(predictions)} predictions to {args.output}")
