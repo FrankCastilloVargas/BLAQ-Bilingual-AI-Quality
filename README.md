@@ -88,4 +88,4 @@ $env:OPENAI_API_KEY="..."
 python scripts/run_live_benchmark.py
 ```
 
-The command writes evaluator predictions and a benchmark report under `validation/benchmark/`. It reports exact primary-score agreement, ±1 agreement, mean absolute error, severity agreement, and per-dimension metrics. The frozen consensus labels are not supplied to the evaluator during inference.
+The command writes evaluator predictions and a benchmark report under `results/benchmark/`. It reports exact primary-score agreement, ±1 agreement, mean absolute error, severity agreement, and per-dimension metrics. The frozen consensus labels are not supplied to the evaluator during inference. Generated benchmark files live under the git-ignored `results/` tree and include evaluator/model/consensus provenance; they are not frozen calibration assets.
