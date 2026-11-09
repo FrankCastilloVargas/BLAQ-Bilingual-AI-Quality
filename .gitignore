@@ -10,4 +10,6 @@ venv/
 .vscode/
 data/audits/*.json
 !data/audits/.gitkeep
-\n# Generated evaluator validation runs\nresults/\n
+
+# Generated evaluator validation runs
+/results/
